@@ -1,0 +1,2 @@
+struct lista_t present;
+struct fprio_t espera;
