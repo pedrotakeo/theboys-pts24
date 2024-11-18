@@ -11,25 +11,38 @@
 
 // seus #defines vão aqui
 
+
 // minimize o uso de variáveis globais
 
 // programa principal
 int main ()
 {
+    srand(0);
     // iniciar o mundo
-    printf("TESTES DE EVENTO");
+    printf("TESTES DE EVENTO\n");
+    struct world *world;
+    world = ini_mundo();
+    ini_heroi(world);
+    ini_base(world);
+    struct hero_base hb;
 
+    printf("teste %d\n", world->bases[3].Lotação);
+    lista_insere(world->bases[1].espera, 1, -1);
+    printf("teste %d\n", world->bases[1].espera->prim->valor);
+    printf("teste %d\n", world->bases[1].present->num);
+    printf("teste %d\n", world->bases[4].Lotação);
+   
 
+    hb.hero = 1;
+    hb.base = 1;
+    hb.base_n = 3;
 
-    int i = 1;
-    printf("%6d: CHEGA \033[36mHEROI %d \033[31mBASE %d\033[0m ", i, i, i);
-    printf("\033[32mESPERA\033[0m\n");
-    printf("%6d: ESPERA \033[36mHEROI %2d \033[31mBASE %d\033[0m (%2d)\n", i, i, i, i);
-    printf("%6d: DESIST \033[36mHEROI %2d \033[31mBASE %d\033[0m\n", i, i, i);
-    // executar o laço de simulação
+    //chega_ev(world, 0, hb);
 
-    // destruir o mundo
-
+    //desiste_ev(world, 0, hb);
+    
+    viaja_ev(world, 1000, hb);
+    
     return (0) ;
 }
 

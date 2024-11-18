@@ -28,7 +28,7 @@ struct hero{
 struct base{
     int ID_Base;
     int Lotação;
-    struct lista_t *present;
+    struct cjto_t *present;
     struct lista_t *espera;
     struct jusho Local;
 };
@@ -46,14 +46,25 @@ struct world{
 struct hero_base{
     int hero;
     int base;
+    int base_n;
 };
 
 
 
 //hero and base are indexes for world->hero/base arrays
+struct world *ini_mundo();
+
+void ini_heroi(struct world *world);
+
+void ini_base(struct world *world);
+
 void chega_ev(struct world *world, int time, struct hero_base hb);
 
 void espera_ev(struct world *world, int time, struct hero_base hb);
+
+void desiste_ev(struct world *world, int time, struct hero_base hb);
+
+void viaja_ev(struct world *world, int time, struct hero_base hb);
 
 
 #endif
