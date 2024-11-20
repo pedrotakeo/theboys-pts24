@@ -24,7 +24,23 @@ int main ()
     world = ini_mundo();
     ini_heroi(world);
     ini_base(world);
-    struct hero_base hb;
+    struct hero_base *a;
+    struct hero_base *b;
+
+    if (!(a = malloc(sizeof(struct hero_base)))){
+        return 0;
+
+    }
+    if (!(b = malloc(sizeof(struct hero_base)))){
+        return 0;
+
+    }
+    a->hero = 1;
+    a->base = 1;
+    a->base_n = 3;
+    b->hero = 2;
+    b->base = 3;
+    b->base_n = 4;
 
     printf("teste %d\n", world->bases[3].Lotação);
     lista_insere(world->bases[1].espera, 1, -1);
@@ -32,17 +48,15 @@ int main ()
     printf("teste %d\n", world->bases[1].present->num);
     printf("teste %d\n", world->bases[4].Lotação);
    
+    chega_ev(world, 0, a);
 
-    hb.hero = 1;
-    hb.base = 1;
-    hb.base_n = 3;
+    desiste_ev(world, 0, a);    
+    viaja_ev(world, 3, b);
 
-    //chega_ev(world, 0, hb);
+    fprio_imprime(world->lef);
+    printf("\n");
+    world = destroi_mundo(world);
 
-    //desiste_ev(world, 0, hb);
-    
-    viaja_ev(world, 1000, hb);
-    
     return (0) ;
 }
 

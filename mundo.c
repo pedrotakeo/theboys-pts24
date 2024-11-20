@@ -14,6 +14,13 @@ EVENTOS:
     -Desiste - Tipo 3    -Viaja - Tipo 7
     -Avisa - Tipo 4      -Morre - Tipo 8
 */
+
+//MUDAR P ARQUIVO SEPARADO DPS
+/*int dist_cartesiana(int x, int y, int a, int b){
+    return sqrt((a-x));
+}*/
+
+
 struct world *ini_mundo(){
     struct world *world;
     if(!(world = malloc(sizeof(struct world)))){
@@ -29,14 +36,18 @@ struct world *ini_mundo(){
 }
 
 void ini_heroi(struct world *world){
-    srand(0);
-
     for (int i =0; i < N_HEROIS; i++){
         world->heroes[i].ID_hero = i;
         world->heroes[i].EXP = 0;
         world->heroes[i].Patience = rand()%101;
         world->heroes[i].Speed = (rand()% 4951)+50;
         world->heroes[i].power = cjto_aleat(rand()%3, 3);
+    }
+}
+
+void destroi_heroi(struct world *world){
+    for (int i =0; i < N_HEROIS; i++){
+        world->heroes[i].power = cjto_destroi(world->heroes[i].power);
     }
 }
 
@@ -52,19 +63,35 @@ void ini_base(struct world *world){
     }
 }
 
-void chega_ev(struct world *world, int time, struct hero_base hb){
+void destroi_base(struct world *world){
+
+    for (int i =0; i < N_BASES; i++){
+        world->bases[i].present = cjto_destroi(world->bases[i].present);
+        world->bases[i].espera = lista_destroi(world->bases[i].espera);
+    }
+}
+
+struct world *destroi_mundo(struct world *world){
+    world->lef = fprio_destroi(world->lef);
+    destroi_base(world);
+    destroi_heroi(world);
+    free(world);
+    return NULL;
+}
+
+void chega_ev(struct world *world, int time, struct hero_base *hb){
     bool espera = true;
 
-    world->heroes[hb.hero].Base = hb.base;
+    world->heroes[hb->hero].Base = hb->base;
 
-    printf("%6d: CHEGA \033[36mHEROI %2d \033[31mBASE %d\033[0m (%2d/%2d) ", time, hb.hero, hb.base, world->bases[hb.base].present->num, world->bases[hb.base].Lotação);
+    printf("%6d: CHEGA \033[36mHEROI %2d \033[31mBASE %d\033[0m (%2d/%2d) ", time, hb->hero, hb->base, world->bases[hb->base].present->num, world->bases[hb->base].Lotação);
 
     //se há vagas em B e a fila de espera em B está vazia:
-    if (world->bases[hb.base].present->num < world->bases[hb.base].Lotação && !world->bases[hb.base].espera->tamanho){ 
+    if (world->bases[hb->base].present->num < world->bases[hb->base].Lotação && !world->bases[hb->base].espera->tamanho){ 
         espera = true;
     }
     else{
-        espera = world->heroes[hb.hero].Patience > 10 * world->bases[hb.base].espera->tamanho;
+        espera = world->heroes[hb->hero].Patience > 10 * world->bases[hb->base].espera->tamanho;
     }
    
 
@@ -80,29 +107,30 @@ void chega_ev(struct world *world, int time, struct hero_base hb){
     return;  
 }
 
-void espera_ev(struct world *world, int time, struct hero_base hb){
-    printf("%6d: ESPERA \033[36mHEROI %2d \033[31mBASE %d\033[0m (%2d)\n", time, hb.hero, hb.base, world->bases[hb.base].espera->tamanho);
-    lista_insere(world->bases[hb.base].espera, world->heroes[hb.hero].ID_hero, -1);
+void espera_ev(struct world *world, int time, struct hero_base *hb){
+    printf("%6d: ESPERA \033[36mHEROI %2d \033[31mBASE %d\033[0m (%2d)\n", time, hb->hero, hb->base, world->bases[hb->base].espera->tamanho);
+    lista_insere(world->bases[hb->base].espera, world->heroes[hb->hero].ID_hero, -1);
     fprio_insere (world->lef, &hb, 4, time);
 
     return;  
 }
 
-void desiste_ev(struct world *world, int time, struct hero_base hb){
-    printf("%6d: DESIST \033[36mHEROI %2d \033[31mBASE %d\033[0m\n", time, hb.hero, hb.base);
-    hb.base_n = (rand()%10)-1;
+void desiste_ev(struct world *world, int time, struct hero_base *hb){
+    printf("%6d: DESIST \033[36mHEROI %2d \033[31mBASE %d\033[0m\n", time, hb->hero, hb->base);
+    hb->base_n = (rand()%10)-1;
     fprio_insere (world->lef, &hb, 7, time);
 
     return;  
 }
 
-void viaja_ev(struct world *world, int time, struct hero_base hb){
+void viaja_ev(struct world *world, int time, struct hero_base *hb){
     int duracao;
     int dist;
 
-    dist = sqrt(((world->bases[hb.base_n].Local.x - world->bases[hb.base].Local.x)*(world->bases[hb.base_n].Local.x - world->bases[hb.base].Local.x))+((world->bases[hb.base_n].Local.y - world->bases[hb.base].Local.y)*(world->bases[hb.base_n].Local.y - world->bases[hb.base].Local.y)));
-    duracao = dist/world->heroes[hb.hero].Speed;
-    fprio_insere (world->lef, &hb, 1, (time + duracao));
+    dist = sqrt(((world->bases[hb->base_n].Local.x - world->bases[hb->base].Local.x)*(world->bases[hb->base_n].Local.x - world->bases[hb->base].Local.x))+((world->bases[hb->base_n].Local.y - world->bases[hb->base].Local.y)*(world->bases[hb->base_n].Local.y - world->bases[hb->base].Local.y)));
+    duracao = dist/world->heroes[hb->hero].Speed;
+    time = time + duracao;
+    fprio_insere (world->lef, &hb, 1, time);
 
-    printf("%6d: VIAJA \033[36mHEROI %2d \033[31mBASE %d -> BASE %d\033[0m DIST %d VEL %d CHEGA %d\n",time, hb.hero, hb.base, hb.base_n, dist, world->heroes[hb.hero].Speed, time + duracao);
+    printf("%6d: VIAJA \033[36mHEROI %2d \033[31mBASE %d -> BASE %d\033[0m DIST %d VEL %d CHEGA %d\n",time, hb->hero, hb->base, hb->base_n, dist, world->heroes[hb->hero].Speed, time + duracao);
 }

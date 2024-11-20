@@ -54,17 +54,19 @@ struct hero_base{
 //hero and base are indexes for world->hero/base arrays
 struct world *ini_mundo();
 
+struct world *destroi_mundo(struct world *world);
+
 void ini_heroi(struct world *world);
 
 void ini_base(struct world *world);
 
-void chega_ev(struct world *world, int time, struct hero_base hb);
+void chega_ev(struct world *world, int time, struct hero_base *hb);
 
-void espera_ev(struct world *world, int time, struct hero_base hb);
+void espera_ev(struct world *world, int time, struct hero_base *hb);
 
-void desiste_ev(struct world *world, int time, struct hero_base hb);
+void desiste_ev(struct world *world, int time, struct hero_base *hb);
 
-void viaja_ev(struct world *world, int time, struct hero_base hb);
+void viaja_ev(struct world *world, int time, struct hero_base *hb);
 
 
 #endif
