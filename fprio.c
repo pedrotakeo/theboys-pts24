@@ -12,12 +12,11 @@
 
 //verifica se itens sendo inseridos sao copias
 //retorna 0 se for uma copia e 1 se não
-int verifica_copia(struct fprio_t *f, struct fpnodo_t *novo) {
+int verifica_copia(struct fprio_t *f, void *item) {
     struct fpnodo_t *atual = f->prim;
 
     while (atual){
-        if (novo->item == atual->item){
-
+        if (atual->item == item){
             return 0;
         }
 
@@ -84,23 +83,22 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
     struct fpnodo_t* novo;
     struct fpnodo_t* pos;
 
-    if (!f || !item || !(novo = malloc(sizeof(struct fpnodo_t)))){
+    if (!f || !item){
 
+        return -1;
+    }
+
+    if (!verifica_copia(f, item)){
+        return -1;
+    }
+
+    if (!(novo = malloc(sizeof(struct fpnodo_t)))){
         return -1;
     }
 
     novo->item = item;
     novo->prio = prio;
     novo->tipo = tipo;
-
-    if (!verifica_copia(f, novo)){
-        free(novo->item);
-        novo->item = NULL;
-        free(novo);
-        novo = NULL;
-
-        return -1;
-    }
 
     if (f->num == 0){ //insere como unico item na lista
         novo->prox = NULL;
@@ -123,11 +121,11 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
     return f->num++;
 }
 
-void *fprio_retira (struct fprio_t *f, int *tipo, int *prio){
+void *fprio_retira (struct fprio_t *f){
     struct fpnodo_t* aux;
     void *item;
 
-    if (!f || !f->num || !tipo || !prio){ 
+    if (!f || !f->num){ 
 
         return NULL;
     }
@@ -136,8 +134,6 @@ void *fprio_retira (struct fprio_t *f, int *tipo, int *prio){
     f->prim = aux->prox;
     f->num--;
     //-----------------------
-    *tipo = aux->tipo;
-    *prio = aux->prio;
     item = aux->item;
 
     free(aux);

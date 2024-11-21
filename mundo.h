@@ -3,6 +3,7 @@
 #include "fprio.h"
 #include "lista.h"
 #include "conjunto.h"
+//--------------------
 #define T_INICIO 0
 #define T_FIM_DO_MUNDO 525600
 #define N_TAMANHO_MUNDO 20000
@@ -10,6 +11,16 @@
 #define N_BASES 10
 #define N_MISSOES 5256
 #define N_HABILIDADES 10
+//----------------------
+#define CHEGA 1
+#define ESPERA 2
+#define DESISTE 3
+#define AVISA 4
+#define ENTRA 5
+#define SAI 6
+#define VIAJA 7
+#define MORRE 8
+#define FIM 9
 
 struct jusho{
     int x;
@@ -60,11 +71,19 @@ void ini_heroi(struct world *world);
 
 void ini_base(struct world *world);
 
+void ini_lef (struct world *world);
+
+void ex_ev(struct world *world);
+
+void event_trigger (struct world *world, struct hero_base *data);
+
 void chega_ev(struct world *world, int time, struct hero_base *hb);
 
 void espera_ev(struct world *world, int time, struct hero_base *hb);
 
 void desiste_ev(struct world *world, int time, struct hero_base *hb);
+
+void avisa_ev(struct world *world, int time, struct hero_base *hb);
 
 void viaja_ev(struct world *world, int time, struct hero_base *hb);
 

@@ -41,9 +41,10 @@ struct lista_t *lista_destroi (struct lista_t *lst){
     return NULL;
 }
 
-int lista_insere (struct lista_t *lst, int item, int pos){
+int lista_insere (struct lista_t *lst, int item){
     struct item_t* novo;
     struct item_t* aux;
+    int pos = -1;
 
     if (!lst || !(novo = malloc(sizeof(struct item_t)))){ //lista nula ou malloc deu errado
 
@@ -95,8 +96,9 @@ int lista_insere (struct lista_t *lst, int item, int pos){
     return lst->tamanho;
 }
 
-int lista_retira (struct lista_t *lst, int *item, int pos){
+int lista_retira (struct lista_t *lst, int *item){
     struct item_t* aux;
+    int pos = 0;
 
     if (!lst || !item || lst->tamanho == 0 || pos >= lst->tamanho){
 

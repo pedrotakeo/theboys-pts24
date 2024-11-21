@@ -36,12 +36,12 @@ struct lista_t *lista_destroi (struct lista_t *lst);
 // Insere o item na lista na posição indicada;
 // se a posição for além do fim da lista ou for -1, insere no fim.
 // Retorno: número de itens na lista após a operação ou -1 em erro.
-int lista_insere (struct lista_t *lst, int item, int pos);
+int lista_insere (struct lista_t *lst, int item);
 
 // Retira o item da lista da posição indicada.
 // se a posição for -1, retira do fim.
 // Retorno: número de itens na lista após a operação ou -1 em erro.
-int lista_retira (struct lista_t *lst, int *item, int pos);
+int lista_retira (struct lista_t *lst, int *item);
 
 // Informa o valor do item na posição indicada, sem retirá-lo.
 // se a posição for -1, consulta do fim.
