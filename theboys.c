@@ -30,8 +30,8 @@ int main ()
     ex_ev(world);
 
 
-    fprio_imprime(world->lef);
-    printf("\n");
+    //fprio_imprime(world->lef);
+    //printf("\n");
     world = destroi_mundo(world);
 
     return (0) ;
