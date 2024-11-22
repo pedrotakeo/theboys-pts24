@@ -1,2 +1,3 @@
 -testar bem .h
 -alterar lista p virar uma fila
+-FIX NUMBER SHIT IN MUNDO.C

@@ -43,9 +43,7 @@ struct lista_t *lista_destroi (struct lista_t *lst){
 
 int lista_insere (struct lista_t *lst, int item){
     struct item_t* novo;
-    struct item_t* aux;
     int pos = -1;
-    
 
     if (!lst || !(novo = malloc(sizeof(struct item_t)))){ //lista nula ou malloc deu errado
 
@@ -72,28 +70,6 @@ int lista_insere (struct lista_t *lst, int item){
 
         return lst->tamanho;
     }
-
-    if (pos == 0){ //caso especifico para primeiro item da lista (anterior nulo)
-        novo->ant = NULL;
-        novo->prox = lst->prim;
-        lst->prim->ant = novo;
-        lst->prim = novo;
-        lst->tamanho++;
-
-        return lst->tamanho;
-    }
-
-    aux = lst->prim;
-    for (int i = 0; i < pos; i++){
-        aux = aux->prox;
-    }
-    novo->prox = aux;
-    aux = aux->ant;
-    novo->ant = aux;
-    aux->prox = novo;
-    aux->prox->prox->ant = novo;
-    lst->tamanho++;
-
     return lst->tamanho;
 }
 
@@ -103,6 +79,10 @@ int lista_retira (struct lista_t *lst, int *item){
 
     if (!lst || !item || lst->tamanho == 0 || pos >= lst->tamanho){
 
+        return -1;
+    }
+    
+    if (!(aux =  malloc(sizeof(struct item_t)))){
         return -1;
     }
 
@@ -124,29 +104,6 @@ int lista_retira (struct lista_t *lst, int *item){
         return lst->tamanho;
     }
     
-    if (pos == -1 || pos == lst->tamanho){ //insere no final (prox nulo)
-        aux = lst->ult;
-        lst->ult = lst->ult->ant;
-        lst->ult->prox = NULL;
-        *item = aux->valor;
-        free(aux);
-        aux = NULL;
-        lst->tamanho--;
-
-        return lst->tamanho;
-    }
-
-    aux = lst->prim;
-    for (int i = 0; i < pos; i++){
-        aux = aux->prox;
-    }
-    aux->prox->ant = aux->ant;
-    aux->ant->prox = aux->prox;
-    *item = aux->valor;
-    free(aux);
-    aux = NULL;
-    lst->tamanho--;
-
     return lst->tamanho;
 }
 

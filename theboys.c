@@ -32,7 +32,7 @@ int main ()
 
     //fprio_imprime(world->lef);
     //printf("\n");
-    world = destroi_mundo(world);
+    //world = destroi_mundo(world);
 
     return (0) ;
 }

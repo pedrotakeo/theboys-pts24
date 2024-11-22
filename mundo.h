@@ -5,7 +5,8 @@
 #include "conjunto.h"
 //--------------------
 #define T_INICIO 0
-#define T_FIM_DO_MUNDO 525600
+//#define T_FIM_DO_MUNDO 525600
+#define T_FIM_DO_MUNDO 10000
 #define N_TAMANHO_MUNDO 20000
 #define N_HEROIS 50
 #define N_BASES 10
@@ -85,7 +86,13 @@ void desiste_ev(struct world *world, int time, struct hero_base *hb);
 
 void avisa_ev(struct world *world, int time, struct hero_base *hb);
 
+void entra_ev(struct world *world, int time, struct hero_base *hb);
+
+void sai_ev(struct world *world, int time, struct hero_base *hb);
+
 void viaja_ev(struct world *world, int time, struct hero_base *hb);
+
+void fim (struct world *world);
 
 
 #endif

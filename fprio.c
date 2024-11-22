@@ -16,7 +16,7 @@ int verifica_copia(struct fprio_t *f, struct fpnodo_t *novo) {
     struct fpnodo_t *atual = f->prim;
 
     while (atual){
-        if (novo->item == atual->item && novo->prio == atual->prio){
+        if (novo->item == atual->item){
 
             return 0;
         }
