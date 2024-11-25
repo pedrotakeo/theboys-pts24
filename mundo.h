@@ -76,8 +76,6 @@ void ini_lef (struct world *world);
 
 void ex_ev(struct world *world);
 
-void event_trigger (struct world *world, struct hero_base *data);
-
 void chega_ev(struct world *world, int time, struct hero_base *hb);
 
 void espera_ev(struct world *world, int time, struct hero_base *hb);

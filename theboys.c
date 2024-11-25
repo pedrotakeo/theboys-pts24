@@ -23,6 +23,7 @@ int main ()
     struct world *world;
     world = ini_mundo();
     ini_heroi(world);
+    printf("PACIENCIA TESTE %d\n", world->heroes[1].Patience);
     ini_base(world);
     ini_lef(world);
     fprio_imprime(world->lef);
@@ -32,7 +33,7 @@ int main ()
 
     //fprio_imprime(world->lef);
     //printf("\n");
-    //world = destroi_mundo(world);
+    world = destroi_mundo(world);
 
     return (0) ;
 }

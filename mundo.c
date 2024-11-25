@@ -7,10 +7,9 @@
 #include "conjunto.h"
 #include "mundo.h"
 
-//MUDAR P ARQUIVO SEPARADO DPS
-/*int dist_cartesiana(int x, int y, int a, int b){
-    return sqrt((a-x));
-}*/
+int dist_cartesiana(int x, int y, int a, int b){
+    return sqrt(((a-x)*(a-x))+((b-y)*(b-y)));
+}
 
 struct world *ini_mundo(){
     struct world *world;
@@ -34,7 +33,7 @@ void ini_heroi(struct world *world){
         world->heroes[i].Speed = (rand()% 4951)+50;
         world->heroes[i].power = cjto_aleat((rand()%3+1), 10);
         
-        //printf("ID Hero %d \n", world->heroes[i].ID_hero);
+        printf("ID Hero %d %d \n", world->heroes[i].ID_hero, world->heroes[i].Patience);
     }
 }
 
@@ -48,12 +47,12 @@ void ini_base(struct world *world){
 
     for (int i =0; i < N_BASES; i++){
         world->bases[i].ID_Base = i;
-        world->bases[i].Local.x = rand()%(N_TAMANHO_MUNDO-1);
-        world->bases[i].Local.y = rand()%(N_TAMANHO_MUNDO-1);
+        world->bases[i].Local.x = rand()%(N_TAMANHO_MUNDO);
+        world->bases[i].Local.y = rand()%(N_TAMANHO_MUNDO);
         world->bases[i].Lotação = (rand()%8)+3;
-        world->bases[i].present = cjto_cria(world->bases[i].Lotação);
+        world->bases[i].present = cjto_cria(N_HEROIS);
         world->bases[i].espera = lista_cria();
-        //printf("ID BASE %d ", world->bases[i].ID_Base);
+        printf("ID BASE %d, LOTAÇÃO %d\n", world->bases[i].ID_Base, world->bases[i].Lotação);
     }
 }
 
@@ -79,9 +78,6 @@ void ini_lef (struct world *world){
         return;
     }
     int time;
-    hb->base_n =0;
-    hb->base = 0;
-    hb->hero = 0;
     for (int i =0; i < N_HEROIS; i++){
         struct hero_base *aux;
         if(!(aux = malloc(sizeof(struct hero_base)))){
@@ -94,87 +90,81 @@ void ini_lef (struct world *world){
         fprio_insere(world->lef, aux, CHEGA, time);
     }
     time = T_FIM_DO_MUNDO;
+    hb->base_n =0;
+    hb->base = 0;
+    hb->hero = 0;
     fprio_insere(world->lef, hb, FIM, time);
 }
 
 void ex_ev(struct world *world){
     struct hero_base *data;
-    if(!(data = malloc(sizeof(struct hero_base)))){
+  
+    if (!(data = malloc(sizeof(struct hero_base))) || world->lef->prim->item == NULL) {
         return;
     }
 
-    if (world->lef->prim->item == NULL) {
-        return;
-    }
-    while (world->lef->num > 0){
+    while (fprio_tamanho(world->lef) > 0){
         data = (struct hero_base *) world->lef->prim->item;
-        event_trigger(world, data);
-        fprio_retira(world->lef);
-    }
-
-    return;
-}
-
-void event_trigger (struct world *world, struct hero_base *data){
-    if (!world || !data || !world->lef || !world->lef->prim){
-        return;
-    }
-    switch (world->lef->prim->tipo)
-    {
-    case CHEGA:
-        //printf("EVENTO NAO ESTA PRONTO");
-        chega_ev(world, world->lef->prim->prio, data);
+        switch (world->lef->prim->tipo){
+        case CHEGA:
+            //printf("EVENTO NAO ESTA PRONTO");
+            chega_ev(world, world->lef->prim->prio, data);
         
 
-        break;
+            break;
 
-    case ESPERA:
+        case ESPERA:
+            //printf("EVENTO NAO ESTA PRONTO");
+            espera_ev(world, world->lef->prim->prio, data);
+
+            break;
+
+        case DESISTE:
+            //printf("EVENTO NAO ESTA PRONTO");
+            desiste_ev(world, world->lef->prim->prio, data);
+
+            break;
+
+        case AVISA:
+            //printf("EVENTO NAO ESTA PRONTO");
+            avisa_ev(world, world->lef->prim->prio, data);
+
+            break;
+
+        case ENTRA:
+            entra_ev(world, world->lef->prim->prio, data);
+            //printf("%6d: EVENTO ENTRA NAO ESTA PRONTO\n", -1);
+
+            break;
+
+        case SAI:
+            sai_ev(world, world->lef->prim->prio, data);
+            //printf("%6d: EVENTO SAI NAO ESTA PRONTO\n", -1);
+
+            break;
+
+        case VIAJA:
         //printf("EVENTO NAO ESTA PRONTO");
-        espera_ev(world, world->lef->prim->prio, data);
+            viaja_ev(world, world->lef->prim->prio, data);
 
-        break;
-
-    case DESISTE:
-        //printf("EVENTO NAO ESTA PRONTO");
-        desiste_ev(world, world->lef->prim->prio, data);
-
-        break;
-
-    case AVISA:
-        //printf("EVENTO NAO ESTA PRONTO");
-        avisa_ev(world, world->lef->prim->prio, data);
-
-        break;
-
-    case ENTRA:
-        entra_ev(world, world->lef->prim->prio, data);
-        //printf("%6d: EVENTO ENTRA NAO ESTA PRONTO\n", -1);
-
-        break;
-
-    case SAI:
-        sai_ev(world, world->lef->prim->prio, data);
-        //printf("%6d: EVENTO SAI NAO ESTA PRONTO\n", -1);
-
-        break;
-
-    case VIAJA:
-        //printf("EVENTO NAO ESTA PRONTO");
-        viaja_ev(world, world->lef->prim->prio, data);
-
-        break;
+            break;
     
-    case MORRE:
-        printf("%6d: EVENTO MORRE NAO ESTA PRONTO\n", -1);
+        case MORRE:
+            printf("%6d: EVENTO MORRE NAO ESTA PRONTO\n", -1);
 
-        break;
+            break;
 
-    case FIM:
-        fim(world);
-        break;
-    default:
-        break;
-    }
+        case FIM:
+            return;
+            break;
+        default:
+            return;
+            break;
+        }
+        fprio_retira(world->lef);
+        }
+
+    return;
 }
 
 void chega_ev(struct world *world, int time, struct hero_base *hb){
@@ -185,25 +175,26 @@ void chega_ev(struct world *world, int time, struct hero_base *hb){
         return;
     }
 
-    world->heroes[hb->hero].Base = hb->base_n;
+    hb->base = hb->base_n;
+    world->heroes[hb->hero].Base = hb->base;
 
-    printf("%6d: CHEGA \033[36mHEROI %2d \033[31mBASE %d\033[0m (%2d/%2d) ", time, hb->hero, world->heroes[hb->hero].Base, world->bases[hb->base].present->num, world->bases[hb->base].Lotação);
+    printf("%6d: CHEGA \033[36mHEROI %2d \033[31mBASE %d\033[0m (%2d/%2d) ", time, hb->hero, hb->base, world->bases[hb->base].present->num, world->bases[hb->base].Lotação);
     
-    dados_chega->base = hb->base;
-    dados_chega->base_n = hb->base_n;
-    dados_chega->hero = hb->hero;
     //se há vagas em B e a fila de espera em B está vazia;
-    if ((world->bases[hb->base].present->num < world->bases[hb->base].Lotação && !world->bases[hb->base].espera->tamanho) || world->heroes[hb->hero].Patience > 10 * world->bases[hb->base].espera->tamanho){ 
+    if ((cjto_card(world->bases[hb->base].present) < world->bases[hb->base].Lotação && !world->bases[hb->base].espera->tamanho) || world->heroes[hb->hero].Patience > (10 * lista_tamanho(world->bases[hb->base].espera))){ 
         espera = 1;
     }
     else{
         espera = 0;
     }
     
-
+    dados_chega->base = hb->base;
+    dados_chega->base_n = hb->base_n;
+    dados_chega->hero = hb->hero;
     if (espera){
         fprio_insere (world->lef, dados_chega, ESPERA, time);
         printf("\033[32mESPERA\033[0m\n");
+
         return;
     }
     fprio_insere (world->lef, dados_chega, DESISTE, time);
@@ -221,7 +212,7 @@ void espera_ev(struct world *world, int time, struct hero_base *hb){
     }
     
     lista_insere(world->bases[hb->base].espera, world->heroes[hb->hero].ID_hero);
-    printf("%6d: ESPERA \033[36mHEROI %2d \033[31mBASE %d\033[0m (%2d)\n", time, hb->hero, world->heroes[hb->hero].Base, world->bases[hb->base].espera->tamanho);
+    printf("%6d: ESPERA \033[36mHEROI %2d \033[31mBASE %d\033[0m (%2d)\n", time, hb->hero, hb->base, lista_tamanho(world->bases[hb->base].espera));
     
     dados_espera->base = hb->base;
     dados_espera->base_n = hb->base_n;
@@ -240,9 +231,9 @@ void desiste_ev(struct world *world, int time, struct hero_base *hb){
     }
 
     printf("%6d: DESIST \033[36mHEROI %2d \033[31mBASE %d\033[0m\n", time, hb->hero, hb->base);
-    hb->base_n = (rand()%10);
+
     dados_desiste->base = hb->base;
-    dados_desiste->base_n = hb->base_n;
+    dados_desiste->base_n = (rand()%10);
     dados_desiste->hero = hb->hero;
     fprio_insere (world->lef, dados_desiste, VIAJA, time);
 
@@ -250,27 +241,29 @@ void desiste_ev(struct world *world, int time, struct hero_base *hb){
 }
 
 void avisa_ev(struct world *world, int time, struct hero_base *hb){
-    struct hero_base *dados_avisa;
-    int *heroi;
-
-    if (!(dados_avisa = malloc(sizeof(struct hero_base))) || !(heroi = malloc(sizeof(int)))){
-
-        return;
-    }
-
-    printf("%6d: AVISA \033[36mPORTEIRO \033[31mBASE %d \033[0m(%2d/%2d) FILA [ ",time, hb->base, world->bases[hb->base].present->num, world->bases[hb->base].Lotação);
+    printf("%6d: AVISA \033[36mPORTEIRO \033[31mBASE %d \033[0m(%2d/%2d) FILA [ ",time, hb->base, cjto_card(world->bases[hb->base].present), world->bases[hb->base].Lotação);
     lista_imprime(world->bases[hb->base].espera);
     printf(" ]\n");
-    while(world->bases[hb->base].present->num < world->bases[hb->base].Lotação && world->bases[hb->base].espera->tamanho){
+
+    while(lista_tamanho(world->bases[hb->base].espera) && cjto_card(world->bases[hb->base].present) < world->bases[hb->base].Lotação){
+        struct hero_base *dados_avisa;
+        int *heroi;
+
+        if (!(dados_avisa = malloc(sizeof(struct hero_base))) || !(heroi = malloc(sizeof(int)))){
+
+            return;
+        }
+
         lista_retira(world->bases[hb->base].espera, heroi);
         cjto_insere(world->bases[hb->base].present, *heroi);
         printf("%6d: AVISA \033[36mPORTEIRO \033[31mBASE %d \033[32m ADMITE %2d\033[0m\n", time, hb->base, *heroi);
+        dados_avisa->base = hb->base;
+        dados_avisa->base_n = hb->base_n;
+        dados_avisa->hero = *heroi;
+        fprio_insere (world->lef, dados_avisa, ENTRA, time);
 
     }
-    dados_avisa->base = hb->base;
-    dados_avisa->base_n = hb->base_n;
-    dados_avisa->hero = hb->hero;
-    fprio_insere (world->lef, dados_avisa, ENTRA, time);
+
 }
 
 void entra_ev(struct world *world, int time, struct hero_base *hb){
@@ -284,32 +277,34 @@ void entra_ev(struct world *world, int time, struct hero_base *hb){
 
     rnd = (rand()%20)+1;
     tpd = 15 + (world->heroes[hb->hero].Patience) * rnd;
-    printf("%6d: ENTRA \033[36mHEROI %2d \033[31mBASE %d \033[0m(%2d/%2d) SAI %d\n",time, hb->hero, hb->base, world->bases[hb->base].present->num, world->bases[hb->base].Lotação, time + tpd);
+    printf("%6d: ENTRA \033[36mHEROI %2d \033[31mBASE %d \033[0m(%2d/%2d) SAI %d\n",time, hb->hero, hb->base, cjto_card(world->bases[hb->base].present), world->bases[hb->base].Lotação, time + tpd);
 
     dados_entra->base = hb->base;
     dados_entra->base_n = hb->base_n;
     dados_entra->hero = hb->hero;
-    fprio_insere (world->lef, dados_entra, SAI, (time + tpd));
+    printf("TIME + TPD = %d\n", time + tpd);
+    fprio_insere (world->lef, dados_entra, SAI, time + tpd);
 }
 
 void sai_ev(struct world *world, int time, struct hero_base *hb){
     struct hero_base *dados_sai;
     struct hero_base *dados_aux;
+    int heroi;
 
     if (!(dados_sai = malloc(sizeof(struct hero_base))) || !(dados_aux = malloc(sizeof(struct hero_base)))){
 
         return;
     }
+    printf("%6d:HEROI %d SAI\n", time, hb->hero);
+    heroi = cjto_retira(world->bases[hb->base].present, hb->hero);
+    printf("%6d: SAI \033[36mHEROI %2d \033[31mBASE %d \033[0m(%2d/%2d)\n",time, hb->hero, hb->base, heroi, world->bases[hb->base].Lotação);
     
-    printf("%6d: SAI \033[36mHEROI %2d \033[31mBASE %d \033[0m(%2d/%2d)\n",time, hb->hero, hb->base, cjto_retira(world->bases[hb->base].present, hb->hero), world->bases[hb->base].Lotação);
-    
-    hb->base_n = (rand()%10);
     dados_sai->base = hb->base;
-    dados_sai->base_n = hb->base_n;
+    dados_sai->base_n = (rand()%10);
     dados_sai->hero = hb->hero;
     fprio_insere (world->lef, dados_sai, VIAJA, time);
     dados_aux->base = hb->base;
-    dados_aux->base_n = hb->base_n;
+    dados_aux->base_n = dados_sai->base_n;
     dados_aux->hero = hb->hero;
     fprio_insere (world->lef, dados_aux, AVISA, time);
 }
@@ -335,6 +330,9 @@ void viaja_ev(struct world *world, int time, struct hero_base *hb){
 }
 
 void fim (struct world *world){
-    printf("BYEEEE");
-    destroi_mundo(world);
+    printf("3...\n");
+    printf("2...\n");
+    printf("1...\n");
+    printf("BOOM\n");
+    world = destroi_mundo(world);
 }
