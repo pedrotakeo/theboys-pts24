@@ -155,9 +155,23 @@ void ex_ev(struct world *world){
             break;
 
         case FIM:
+            printf("   _____           ____            _ \n");
+            printf("  |___ /          |___ \\          / |\n");
+            printf("    |_ \\            __) |         | |\n");
+            printf("   ___) |  _ _ _   / __/   _ _ _  | |\n");
+            printf("  |____/  (_|_|_) |_____| (_|_|_) |_| (_|_|_)\n");
+            printf("\n");
+            printf("          ____   ___   ___  __  __ \n");
+            printf("         | __ ) / _ \\ / _ \\|  \\/  |\n");
+            printf("         |  _ \\| | | | | | | |\\/| |\n");
+            printf("         | |_) | |_| | |_| | |  | |\n");
+            printf("         |____/ \\___/ \\___/|_|  |_|\n");
+            printf("\n              WORLD ENDED >:)\n");
+
             return;
             break;
         default:
+        
             return;
             break;
         }
@@ -282,7 +296,7 @@ void entra_ev(struct world *world, int time, struct hero_base *hb){
     dados_entra->base = hb->base;
     dados_entra->base_n = hb->base_n;
     dados_entra->hero = hb->hero;
-    printf("TIME + TPD = %d\n", time + tpd);
+    //printf("TIME + TPD = %d\n", time + tpd);
     fprio_insere (world->lef, dados_entra, SAI, time + tpd);
 }
 
@@ -295,7 +309,7 @@ void sai_ev(struct world *world, int time, struct hero_base *hb){
 
         return;
     }
-    printf("%6d:HEROI %d SAI\n", time, hb->hero);
+    //printf("%6d:HEROI %d SAI\n", time, hb->hero);
     heroi = cjto_retira(world->bases[hb->base].present, hb->hero);
     printf("%6d: SAI \033[36mHEROI %2d \033[31mBASE %d \033[0m(%2d/%2d)\n",time, hb->hero, hb->base, heroi, world->bases[hb->base].Lotação);
     
