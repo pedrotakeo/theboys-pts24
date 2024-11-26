@@ -28,6 +28,12 @@ struct jusho{
     int y;
 };
 
+struct hero_base{
+    int hero;
+    int base;
+    int base_n;
+};
+
 struct hero{
     int ID_hero;
     struct cjto_t *power;  
@@ -35,6 +41,7 @@ struct hero{
     int Speed;
     int EXP;
     int Base;
+    int vida;
 };
 
 struct base{
@@ -43,6 +50,8 @@ struct base{
     struct cjto_t *present;
     struct lista_t *espera;
     struct jusho Local;
+    int fila_max;
+    int missoes;
 };
 
 struct world{
@@ -53,15 +62,16 @@ struct world{
     int N_Mission;
     int N_habilidades;
     struct fprio_t *lef;
+    int missoes_cumpridas;
 };
 
-struct hero_base{
-    int hero;
-    int base;
-    int base_n;
+struct missao{
+    int ID_missao;
+    struct cjto_t HAB_nec;
+    int perigo;
+    struct jusho local;
+    int tentativas;
 };
-
-
 
 //hero and base are indexes for world->hero/base arrays
 struct world *ini_mundo();
@@ -75,22 +85,6 @@ void ini_base(struct world *world);
 void ini_lef (struct world *world);
 
 void ex_ev(struct world *world);
-
-void chega_ev(struct world *world, int time, struct hero_base *hb);
-
-void espera_ev(struct world *world, int time, struct hero_base *hb);
-
-void desiste_ev(struct world *world, int time, struct hero_base *hb);
-
-void avisa_ev(struct world *world, int time, struct hero_base *hb);
-
-void entra_ev(struct world *world, int time, struct hero_base *hb);
-
-void sai_ev(struct world *world, int time, struct hero_base *hb);
-
-void viaja_ev(struct world *world, int time, struct hero_base *hb);
-
-void fim (struct world *world);
 
 
 #endif
