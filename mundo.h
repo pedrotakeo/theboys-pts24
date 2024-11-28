@@ -5,13 +5,13 @@
 #include "conjunto.h"
 //--------------------
 #define T_INICIO 0
-//#define T_FIM_DO_MUNDO 525600
-#define T_FIM_DO_MUNDO 52560
+#define T_FIM_DO_MUNDO 525600
+//#define T_FIM_DO_MUNDO 52560
 #define N_TAMANHO_MUNDO 20000
 #define N_HEROIS 50
 #define N_BASES 10
-//#define N_MISSOES 5256
-#define N_MISSOES 525
+#define N_MISSOES 5256
+//#define N_MISSOES 525
 #define N_HABILIDADES 10
 //----------------------
 #define CHEGA 1

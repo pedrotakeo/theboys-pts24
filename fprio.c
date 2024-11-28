@@ -11,9 +11,12 @@
 //------------------------------------------------------------------------------
 
 //verifica se itens sendo inseridos sao copias
-//retorna 0 se for uma copia e 1 se não
+//retorna 0 se for uma copia e 1 se não. -1 em erro
 int verifica_copia(struct fprio_t *f, struct fpnodo_t *novo) {
     struct fpnodo_t *atual = f->prim;
+    if(!novo || !f || !atual){
+        return -1;
+    }
 
     while (atual){
         if (novo->item == atual->item){
@@ -93,7 +96,7 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
     novo->prio = prio;
     novo->tipo = tipo;
 
-    if (verifica_copia(f, novo) == 0){
+    if (verifica_copia(f, novo) == 0 || verifica_copia(f, novo) == -1){
         free(novo->item);
         novo->item = NULL;
         free(novo);

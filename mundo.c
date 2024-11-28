@@ -94,7 +94,7 @@ void destroi_missoes(struct world *world){
 void ini_lef (struct world *world){
     int time;
     struct hero_base *hb;
-     if(!(hb = malloc(sizeof(struct hero_base)))){
+    if(!(hb = malloc(sizeof(struct hero_base)))){
         return;
     }
 
@@ -122,7 +122,10 @@ void destroi_lef(struct world *world){
     struct fpnodo_t *atual = world->lef->prim->prox;
     struct hero_base *aux;
     
-    
+    if(!atual || !world){
+        return;
+    }
+
     while (atual){
         aux = (struct hero_base *) atual->item;
         free(aux);
@@ -134,7 +137,7 @@ void destroi_lef(struct world *world){
 }
 
 struct world *destroi_mundo(struct world *world){
-    destroi_lef(world);
+    //destroi_lef(world);
     world->lef = fprio_destroi(world->lef);
     destroi_base(world);
     destroi_heroi(world);
@@ -147,7 +150,7 @@ void ex_ev(struct world *world){
     struct hero_base *dados;
     int EVENTOS_TRATADOS = 0;
   
-    if (!(dados = malloc(sizeof(struct hero_base))) || world->lef->prim->item == NULL) {
+    if (!world->lef->prim->item || !world || !(dados = malloc(sizeof(struct hero_base)))) {
         return;
     }
 

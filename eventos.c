@@ -356,6 +356,8 @@ void missao_ev(struct world *world, int time, struct hero_base *hb){
 
 
 void fim_ev (struct world *world, int time, int eventos, struct hero_base *hb){
+    double media_mi, media_tent, taxa_mo;
+    int min_tent, max_tent;
     printf("%6d:\033[31m FIM\033[0m\n", time);
     printf("\n--\033[33mHERO STATS\033[0m---------------------------------------------\n");
 
@@ -379,9 +381,44 @@ void fim_ev (struct world *world, int time, int eventos, struct hero_base *hb){
         printf("\033[31mBASE %d \033[0m LOT %2d FILA MAX %2d MISSOES %d\n", i, world->bases[i].Lotação, world->bases[i].fila_max, world->bases[i].missoes);
     }
 
+    printf("\n--\033[33mMISSION STATS\033[0m---------------------------------------------\n");
+
+    for (int i =0; i < N_MISSOES; i++){
+        printf("MISSAO %d TENT: %d\n", i, world->missoes[i].tentativas);
+    }
+
     printf("\n--\033[33mWORLD STATS\033[0m--------------------------------------------\n");
     printf("EVENTOS TRATADOS: %d\n", eventos);
-    printf("MISSOES CUMPRIDAS: %d/%d\n", world->missoes_cumpridas, N_MISSOES);
+    media_mi = 100 * (world->missoes_cumpridas / (double)N_MISSOES);
+    printf("MISSOES CUMPRIDAS: %d/%d  (%.1f%%)\n", world->missoes_cumpridas, N_MISSOES, media_mi);
+
+    max_tent = 0;
+    for (int i = 0; i < N_MISSOES; i++){
+        if (world->missoes[i].tentativas > max_tent){
+            max_tent = world->missoes[i].tentativas;
+        }
+    }
+    min_tent = max_tent;
+    for (int i = 0; i < N_MISSOES; i++){
+        if (world->missoes[i].tentativas < min_tent){
+            min_tent = world->missoes[i].tentativas;
+        }
+    }
+    media_tent = 0;
+    for (int i = 0; i < N_MISSOES; i++){
+        media_tent = media_tent + world->missoes[i].tentativas;
+    }
+    media_tent = media_tent / (double)N_MISSOES;
+    
+    printf("TENTATIVAS/MISSAO: MIN %d, MAX %d, MEDIA %.1f\n", min_tent, max_tent, media_tent);
+    
+    for (int i = 0; i < N_HEROIS; i++){
+        if (!world->heroes[i].vida){
+            taxa_mo++;
+        }
+    }
+    taxa_mo = 100 * (taxa_mo / (double)N_HEROIS);
+    printf("TAXA MORTALIDADE: %.1f%%\n", taxa_mo);
 
     free(hb);
     hb = NULL;
