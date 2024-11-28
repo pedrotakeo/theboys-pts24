@@ -25,34 +25,34 @@
 #define FIM 9
 #define MISSAO 10
 
-struct jusho{
+struct local_cart{
     int x;
     int y;
 };
 
 struct hero_base{
-    int hero;
+    int heroi;
     int base;
     int base_n;
     int missao;
 };
 
-struct hero{
+struct heroi{
     int ID_hero;
     struct cjto_t *power;  
-    int Patience;
-    int Speed;
+    int paciencia;
+    int velocidade;
     int EXP;
-    int Base;
+    int base;
     int vida;
 };
 
 struct base{
-    int ID_Base;
-    int Lotação;
+    int ID_base;
+    int lotacao;
     struct cjto_t *present;
     struct fila_t *espera;
-    struct jusho Local;
+    struct local_cart local;
     int fila_max;
     int missoes;
 };
@@ -61,16 +61,16 @@ struct missao{
     int ID_missao;
     struct cjto_t *HAB_nec;
     int perigo;
-    struct jusho local;
+    struct local_cart local;
     int tentativas;
 };
 
-struct world{
-    int N_Hero;
-    struct hero heroes[N_HEROIS];
-    int N_Base;
+struct mundo{
+    int N_heroi;
+    struct heroi heroes[N_HEROIS];
+    int N_base;
     struct base bases[N_BASES];   
-    int N_Mission;
+    int N_missao;
     struct missao missoes[N_MISSOES];
     int N_habilidades;
     struct fprio_t *lef;
@@ -78,20 +78,20 @@ struct world{
 };
 
 
-//hero and base are indexes for world->hero/base arrays
-struct world *ini_mundo();
+//heroi and base are indexes for mundo->heroi/base arrays
+struct mundo *ini_mundo();
 
-struct world *destroi_mundo(struct world *world);
+struct mundo *destroi_mundo(struct mundo *mundo);
 
-void ini_heroi(struct world *world);
+void ini_heroi(struct mundo *mundo);
 
-void ini_base(struct world *world);
+void ini_base(struct mundo *mundo);
 
-void ini_lef (struct world *world);
+void ini_lef (struct mundo *mundo);
 
-void ex_ev(struct world *world);
+void ex_ev(struct mundo *mundo);
 
-void ini_missoes(struct world *world);
+void ini_missoes(struct mundo *mundo);
 
 
 #endif

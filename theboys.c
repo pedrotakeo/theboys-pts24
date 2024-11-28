@@ -21,18 +21,18 @@ int main ()
     srand(0);
     // iniciar o mundo
     printf("TESTES DE EVENTO\n");
-    struct world *world;
-    world = ini_mundo();
-    ini_heroi(world);
-    ini_base(world);
-    ini_missoes(world);
-    ini_lef(world);
-    ex_ev(world);
+    struct mundo *mundo;
+    mundo = ini_mundo();
+    ini_heroi(mundo);
+    ini_base(mundo);
+    ini_missoes(mundo);
+    ini_lef(mundo);
+    ex_ev(mundo);
 
 
-    //fprio_imprime(world->lef);
+    //fprio_imprime(mundo->lef);
 
-    world = destroi_mundo(world);
+    mundo = destroi_mundo(mundo);
 
     return (0) ;
 }
