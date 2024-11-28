@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "fprio.h"
-#include "lista.h"
+#include "fila.h"
 #include "conjunto.h"
 #include "mundo.h"
 #include "eventos.h"

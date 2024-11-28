@@ -1,17 +1,17 @@
-// TAD lista de números inteiros
+// TAD fila de números inteiros
 // Carlos Maziero - DINF/UFPR, Out 2024
 //
 // Implementação do TAD - a completar
 //
-// Implementação com lista encadeada dupla não-circular
+// Implementação com fila encadeada dupla não-circular
 #include <stdio.h>
 #include <stdlib.h>
-#include "lista.h"
+#include "fila.h"
 
-struct lista_t* lista_cria (){
-    struct lista_t *f;
+struct fila_t* fila_cria (){
+    struct fila_t *f;
 
-    if (!(f = malloc(sizeof(struct lista_t)))){
+    if (!(f = malloc(sizeof(struct fila_t)))){
 
         return NULL;
     }
@@ -22,7 +22,7 @@ struct lista_t* lista_cria (){
     return f;
 }
 
-struct lista_t *lista_destroi (struct lista_t *lst){
+struct fila_t *fila_destroi (struct fila_t *lst){
     if (! lst){
 
         return NULL;
@@ -41,17 +41,17 @@ struct lista_t *lista_destroi (struct lista_t *lst){
     return NULL;
 }
 
-int lista_insere (struct lista_t *lst, int item){
+int fila_insere (struct fila_t *lst, int item){
     struct item_t* novo;
     int pos = -1;
 
-    if (!lst || !(novo = malloc(sizeof(struct item_t)))){ //lista nula ou malloc deu errado
+    if (!lst || !(novo = malloc(sizeof(struct item_t)))){ //fila nula ou malloc deu errado
 
         return -1;
     }
 
     novo->valor = item;
-    if (lst->tamanho == 0){ //insere como unico item na lista
+    if (lst->tamanho == 0){ //insere como unico item na fila
         novo->prox = NULL;
         novo->ant = NULL;
         lst->prim = novo;
@@ -73,16 +73,12 @@ int lista_insere (struct lista_t *lst, int item){
     return lst->tamanho;
 }
 
-int lista_retira (struct lista_t *lst, int *item){
+int fila_retira (struct fila_t *lst, int *item){
     struct item_t* aux;
     int pos = 0;
 
     if (!lst || !item || lst->tamanho == 0 || pos >= lst->tamanho){
 
-        return -1;
-    }
-    
-    if (!(aux =  malloc(sizeof(struct item_t)))){
         return -1;
     }
 
@@ -107,7 +103,7 @@ int lista_retira (struct lista_t *lst, int *item){
     return lst->tamanho;
 }
 
-int lista_consulta (struct lista_t *lst, int *item, int pos){
+int fila_consulta (struct fila_t *lst, int *item, int pos){
     struct item_t* aux;
 
     if (!lst || !item || lst->tamanho == 0 || pos >= lst->tamanho){
@@ -130,7 +126,7 @@ int lista_consulta (struct lista_t *lst, int *item, int pos){
     return lst->tamanho;
 }
 
-int lista_procura (struct lista_t *lst, int valor){
+int fila_procura (struct fila_t *lst, int valor){
     struct item_t* aux;
 
     if (!lst || lst->tamanho == 0){
@@ -150,7 +146,7 @@ int lista_procura (struct lista_t *lst, int valor){
     return -1;
 }
 
-int lista_tamanho (struct lista_t *lst){
+int fila_tamanho (struct fila_t *lst){
     if (!lst){
 
         return -1;
@@ -159,7 +155,7 @@ int lista_tamanho (struct lista_t *lst){
     return lst->tamanho;
 }
 
-void lista_imprime (struct lista_t *lst){
+void fila_imprime (struct fila_t *lst){
     struct item_t* aux;
 
     if (!lst || lst->tamanho == 0){

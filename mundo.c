@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "fprio.h"
-#include "lista.h"
+#include "fila.h"
 #include "conjunto.h"
 #include "eventos.h"
 #include "mundo.h"
@@ -10,6 +10,7 @@
 struct world *ini_mundo(){
     struct world *world;
     if(!(world = malloc(sizeof(struct world)))){
+        fprintf(stderr, "MUNDO NAO ALOCOU");
         return NULL;
     }
     world->lef = fprio_cria();
@@ -47,7 +48,7 @@ void ini_base(struct world *world){
         world->bases[i].Local.y = rand()%(N_TAMANHO_MUNDO);
         world->bases[i].Lotação = (rand()%8)+3;
         world->bases[i].present = cjto_cria(N_HEROIS);
-        world->bases[i].espera = lista_cria();
+        world->bases[i].espera = fila_cria();
         world->bases[i].fila_max = 0;
         world->bases[i].missoes = 0;
     }
@@ -57,7 +58,7 @@ void destroi_base(struct world *world){
 
     for (int i =0; i < N_BASES; i++){
         world->bases[i].present = cjto_destroi(world->bases[i].present);
-        world->bases[i].espera = lista_destroi(world->bases[i].espera);
+        world->bases[i].espera = fila_destroi(world->bases[i].espera);
     }
 }
 
@@ -67,6 +68,7 @@ void ini_missoes(struct world *world){
     for (int i =0; i < N_MISSOES; i++){
         struct hero_base *aux;
         if(!(aux = malloc(sizeof(struct hero_base)))){
+            fprintf(stderr, "MISSAO NAO ALOCOU");
             return;
         }
         world->missoes[i].ID_missao = i;
@@ -94,19 +96,21 @@ void destroi_missoes(struct world *world){
 void ini_lef (struct world *world){
     int time;
     struct hero_base *hb;
-    if(!(hb = malloc(sizeof(struct hero_base)))){
+     if(!(hb = malloc(sizeof(struct hero_base)))){
+        fprintf(stderr, "HB INILEF NAO ALOCOU");
         return;
     }
 
     for (int i =0; i < N_HEROIS; i++){
         struct hero_base *aux;
         if(!(aux = malloc(sizeof(struct hero_base)))){
+            fprintf(stderr, "AUX INILEF NAO ALOCOU");
             return;
         }
         aux->base = rand()%N_BASES;
         aux->hero = i;
         aux->base_n = aux->base;
-        aux->missao = -1;
+        aux->missao = 0;
         time = rand()%4320;
         fprio_insere(world->lef, aux, CHEGA, time);
     }
@@ -114,30 +118,24 @@ void ini_lef (struct world *world){
     hb->base_n =0;
     hb->base = 0;
     hb->hero = 0;
-    hb->missao = -1;
+    hb->missao = 0;
     fprio_insere(world->lef, hb, FIM, time);
 }
 
 void destroi_lef(struct world *world){
     struct fpnodo_t *atual = world->lef->prim->prox;
-    struct hero_base *aux;
-    
-    if(!atual || !world){
-        return;
-    }
 
-    while (atual){
-        aux = (struct hero_base *) atual->item;
+    while(atual){
+        struct hero_base *aux;
+        aux = (struct hero_base *)atual->item;
         free(aux);
         aux = NULL;
         atual = atual->prox;
     }
-    
-
 }
 
 struct world *destroi_mundo(struct world *world){
-    //destroi_lef(world);
+    destroi_lef(world);
     world->lef = fprio_destroi(world->lef);
     destroi_base(world);
     destroi_heroi(world);
@@ -149,12 +147,13 @@ struct world *destroi_mundo(struct world *world){
 void ex_ev(struct world *world){
     struct hero_base *dados;
     int EVENTOS_TRATADOS = 0;
-  
-    if (!world->lef->prim->item || !world || !(dados = malloc(sizeof(struct hero_base)))) {
+
+    if ( !world->lef->prim->item) {
+        
         return;
     }
 
-    while (fprio_tamanho(world->lef) > 0){
+    while (world->lef && fprio_tamanho(world->lef) > 0){
         dados = (struct hero_base *) world->lef->prim->item;
         EVENTOS_TRATADOS++;
         switch (world->lef->prim->tipo){
@@ -181,7 +180,7 @@ void ex_ev(struct world *world){
             break;
 
         case ENTRA:
-            printf("137: EVENTO MISSAO ENTRA NAO ESTA PRONTO\n");
+            //printf("137: EVENTO MISSAO ENTRA NAO ESTA PRONTO\n");
             entra_ev(world, world->lef->prim->prio, dados);
 
             break;
@@ -214,7 +213,9 @@ void ex_ev(struct world *world){
             return;
             break;
         default:
-        
+            free(dados);
+            dados = NULL;
+
             return;
             break;
         }

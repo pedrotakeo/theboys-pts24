@@ -1,3 +1,3 @@
-struct lista_t present;
+struct fila_t present;
 struct fprio_t espera;
 world

@@ -1,7 +1,7 @@
 #ifndef EVENTOS_H
 #define EVENTOS_H
 #include "fprio.h"
-#include "lista.h"
+#include "fila.h"
 #include "conjunto.h"
 //--------------------
 #define T_INICIO 0
@@ -51,7 +51,7 @@ struct base{
     int ID_Base;
     int Lotação;
     struct cjto_t *present;
-    struct lista_t *espera;
+    struct fila_t *espera;
     struct jusho Local;
     int fila_max;
     int missoes;

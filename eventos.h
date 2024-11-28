@@ -1,7 +1,7 @@
 #ifndef MUNDO_H
 #define MUNDO_H
 #include "fprio.h"
-#include "lista.h"
+#include "fila.h"
 #include "conjunto.h"
 #include "mundo.h"
 //-------------------

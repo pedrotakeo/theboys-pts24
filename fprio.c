@@ -1,6 +1,6 @@
 // TAD Fila de prioridades (FPRIO) genérica
 // Carlos Maziero, DINF/UFPR, Out 2024
-// Implementação com lista encadeada simples
+// Implementação com fila encadeada simples
 
 // A COMPLETAR
 
@@ -14,9 +14,6 @@
 //retorna 0 se for uma copia e 1 se não. -1 em erro
 int verifica_copia(struct fprio_t *f, struct fpnodo_t *novo) {
     struct fpnodo_t *atual = f->prim;
-    if(!novo || !f || !atual){
-        return -1;
-    }
 
     while (atual){
         if (novo->item == atual->item){
@@ -96,7 +93,7 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
     novo->prio = prio;
     novo->tipo = tipo;
 
-    if (verifica_copia(f, novo) == 0 || verifica_copia(f, novo) == -1){
+    if (verifica_copia(f, novo) == 0){
         free(novo->item);
         novo->item = NULL;
         free(novo);
@@ -105,7 +102,7 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio){
         return -1;
     }
 
-    if (f->num == 0){ //insere como unico item na lista
+    if (f->num == 0){ //insere como unico item na fila
         novo->prox = NULL;
         f->prim = novo;
 
