@@ -8,6 +8,7 @@
 #include "lista.h"
 #include "conjunto.h"
 #include "mundo.h"
+#include "eventos.h"
 
 // seus #defines vão aqui
 
@@ -23,11 +24,9 @@ int main ()
     struct world *world;
     world = ini_mundo();
     ini_heroi(world);
-    printf("PACIENCIA TESTE %d\n", world->heroes[1].Patience);
     ini_base(world);
+    ini_missoes(world);
     ini_lef(world);
-    fprio_imprime(world->lef);
-    printf("\n");
     ex_ev(world);
 
 
