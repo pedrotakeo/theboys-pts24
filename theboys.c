@@ -20,7 +20,6 @@ int main ()
 {
     srand(0);
     // iniciar o mundo
-    printf("TESTES DE EVENTO\n");
     struct mundo *mundo;
     mundo = ini_mundo();
     ini_heroi(mundo);
