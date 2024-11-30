@@ -7,40 +7,35 @@
 #include "eventos.h"
 #include "mundo.h"
 
-struct mundo *ini_mundo(){
-    struct mundo *mundo;
-    if(!(mundo = malloc(sizeof(struct mundo)))){
-        fprintf(stderr, "MUNDO NAO ALOCOU");
-        return NULL;
-    }
-    mundo->lef = fprio_cria();
-    mundo->N_base = N_BASES;
-    mundo->N_heroi = N_HEROIS;
-    mundo->N_habilidades = N_HABILIDADES;
-    mundo->N_missao = N_MISSOES;
-    mundo->missoes_cumpridas = 0;
-
-    return mundo;
-}
-
 void ini_heroi(struct mundo *mundo){
+    if (!mundo){
+        return ;
+    }
+
     for (int i =0; i < N_HEROIS; i++){
-        mundo->heroes[i].ID_hero = i;
-        mundo->heroes[i].EXP = 0;
-        mundo->heroes[i].paciencia = rand()%101;
-        mundo->heroes[i].velocidade = (rand()% 4951)+50;
-        mundo->heroes[i].power = cjto_aleat((rand()%3+1), 10);
-        mundo->heroes[i].vida = 1;
+        mundo->herois[i].ID_hero = i;
+        mundo->herois[i].EXP = 0;
+        mundo->herois[i].paciencia = rand()%101;
+        mundo->herois[i].velocidade = (rand()% 4951)+50;
+        mundo->herois[i].habilidades = cjto_aleat((rand()%3+1), 10);
+        mundo->herois[i].vida = 1;
     }
 }
 
 void destroi_heroi(struct mundo *mundo){
+    if (!mundo){
+        return;
+    }
+
     for (int i =0; i < N_HEROIS; i++){
-        mundo->heroes[i].power = cjto_destroi(mundo->heroes[i].power);
+        mundo->herois[i].habilidades = cjto_destroi(mundo->herois[i].habilidades);
     }
 }
 
 void ini_base(struct mundo *mundo){
+    if (!mundo){
+        return;
+    }
 
     for (int i =0; i < N_BASES; i++){
         mundo->bases[i].ID_base = i;
@@ -55,6 +50,9 @@ void ini_base(struct mundo *mundo){
 }
 
 void destroi_base(struct mundo *mundo){
+    if (!mundo){
+        return;
+    }
 
     for (int i =0; i < N_BASES; i++){
         mundo->bases[i].present = cjto_destroi(mundo->bases[i].present);
@@ -65,12 +63,18 @@ void destroi_base(struct mundo *mundo){
 
 void ini_missoes(struct mundo *mundo){
     int tempo;
+
+    if (!mundo || !mundo->lef){
+        return;
+    }
+
     for (int i =0; i < N_MISSOES; i++){
-        struct hero_base *aux;
-        if(!(aux = malloc(sizeof(struct hero_base)))){
-            fprintf(stderr, "MISSAO NAO ALOCOU");
+        struct dados *aux;
+
+        if (!(aux = malloc(sizeof(struct dados)))){
             return;
         }
+
         mundo->missoes[i].ID_missao = i;
         mundo->missoes[i].local.x = rand()%(N_TAMANHO_MUNDO);
         mundo->missoes[i].local.y = rand()%(N_TAMANHO_MUNDO);
@@ -78,9 +82,8 @@ void ini_missoes(struct mundo *mundo){
         mundo->missoes[i].perigo = rand()%101;
         mundo->missoes[i].tentativas = 0;
         aux->missao = i;
-        aux->base = -1;
-        aux->base_n = -1;
-        aux->heroi = -1;
+        aux->base_n = VALOR_INVALIDO;
+        aux->heroi = VALOR_INVALIDO;
         tempo = rand()%T_FIM_DO_MUNDO;
         fprio_insere(mundo->lef, aux, MISSAO, tempo);
 
@@ -88,74 +91,115 @@ void ini_missoes(struct mundo *mundo){
 }
 
 void destroi_missoes(struct mundo *mundo){
+    if (!mundo){
+        return;
+    }
+
     for (int i =0; i < N_MISSOES; i++){
         mundo->missoes[i].HAB_nec = cjto_destroi(mundo->missoes[i].HAB_nec);
     }
 }
 
 void ini_lef (struct mundo *mundo){
+    struct dados *hb;
     int tempo;
-    struct hero_base *hb;
-     if(!(hb = malloc(sizeof(struct hero_base)))){
-        fprintf(stderr, "HB INILEF NAO ALOCOU");
+
+    if (!mundo || !(hb = malloc(sizeof(struct dados)))){
+
         return;
     }
-
+    
     for (int i =0; i < N_HEROIS; i++){
-        struct hero_base *aux;
-        if(!(aux = malloc(sizeof(struct hero_base)))){
-            fprintf(stderr, "AUX INILEF NAO ALOCOU");
+        struct dados *aux;
+        if (!(aux = malloc(sizeof(struct dados)))){
+
             return;
         }
-        aux->base = rand()%N_BASES;
+
         aux->heroi = i;
-        aux->base_n = aux->base;
+        mundo->herois[aux->heroi].base = rand()%N_BASES;
+        aux->base_n = mundo->herois[aux->heroi].base;
         aux->missao = 0;
         tempo = rand()%4320;
         fprio_insere(mundo->lef, aux, CHEGA, tempo);
+
     }
     tempo = T_FIM_DO_MUNDO;
-    hb->base_n =0;
-    hb->base = 0;
-    hb->heroi = 0;
-    hb->missao = 0;
+    hb->base_n = VALOR_INVALIDO;
+    hb->heroi = VALOR_INVALIDO;
+    hb->missao = VALOR_INVALIDO;
     fprio_insere(mundo->lef, hb, FIM, tempo);
 }
 
-void destroi_lef(struct mundo *mundo){
-    struct fpnodo_t *atual = mundo->lef->prim->prox;
+void destroi_itens_lef(struct mundo *mundo){
+    struct fpnodo_t *atual;
 
-    while(atual){
-        struct hero_base *aux;
-        aux = (struct hero_base *)atual->item;
+    if (!mundo || !mundo->lef){
+
+        return;
+    }
+
+    atual = mundo->lef->prim->prox;
+    while (atual){
+        struct dados *aux;
+        aux = (struct dados *)atual->item;
         free(aux);
         aux = NULL;
         atual = atual->prox;
     }
 }
 
+struct mundo *ini_mundo(){
+    struct mundo *mundo;
+
+    if (!(mundo = malloc(sizeof(struct mundo)))){
+        return NULL;
+    }
+
+    mundo->lef = fprio_cria();
+    mundo->N_base = N_BASES;
+    mundo->N_heroi = N_HEROIS;
+    mundo->N_habilidades = N_HABILIDADES;
+    mundo->N_missao = N_MISSOES;
+    mundo->missoes_cumpridas = 0;
+    //inicialização de vetores e fprio
+    ini_heroi(mundo);
+    ini_base(mundo);
+    ini_missoes(mundo);
+    ini_lef(mundo);
+
+    return mundo;
+}
+
 struct mundo *destroi_mundo(struct mundo *mundo){
-    destroi_lef(mundo);
+    if (!mundo){
+
+        return NULL;
+    }
+
+    destroi_itens_lef(mundo);
     mundo->lef = fprio_destroi(mundo->lef);
     destroi_base(mundo);
     destroi_heroi(mundo);
     destroi_missoes(mundo);
     free(mundo);
+
     return NULL;
 }
 
 void ex_ev(struct mundo *mundo){
-    struct hero_base *dados;
+    struct dados *dados;
     int eventos_tratados = 0;
 
-    if ( !mundo->lef->prim->item) {
+    if ( !mundo || !mundo->lef->prim->item){
         
         return;
     }
 
     while (mundo->lef && fprio_tamanho(mundo->lef) > 0){
-        dados = (struct hero_base *) mundo->lef->prim->item;
+        dados = (struct dados *) mundo->lef->prim->item;
         eventos_tratados++;
+
         switch (mundo->lef->prim->tipo){
         case CHEGA:
             chega_ev(mundo, mundo->lef->prim->prio, dados);
@@ -208,18 +252,20 @@ void ex_ev(struct mundo *mundo){
             fim_ev (mundo, mundo->lef->prim->prio, eventos_tratados, dados);
 
             return;
+
             break;
+
         default:
+
             free(dados);
             dados = NULL;
-
             return;
+
             break;
         }
-        fprio_retira(mundo->lef);
 
+        fprio_retira(mundo->lef);
         }
 
     return;
 }
-

@@ -1,17 +1,16 @@
-#ifndef EVENTOS_H
-#define EVENTOS_H
+#ifndef MUNDO_H
+#define MUNDO_H
+//---------------------
 #include "fprio.h"
 #include "fila.h"
 #include "conjunto.h"
-//--------------------
+//---------------------
 #define T_INICIO 0
 #define T_FIM_DO_MUNDO 525600
-//#define T_FIM_DO_MUNDO 52560
 #define N_TAMANHO_MUNDO 20000
 #define N_HEROIS 50
 #define N_BASES 10
 #define N_MISSOES 5256
-//#define N_MISSOES 525
 #define N_HABILIDADES 10
 //----------------------
 #define CHEGA 1
@@ -24,22 +23,23 @@
 #define MORRE 8
 #define FIM 9
 #define MISSAO 10
+//-----------------------
+#define VALOR_INVALIDO -1
 
 struct local_cart{
     int x;
     int y;
 };
 
-struct hero_base{
+struct dados{
     int heroi;
-    int base;
     int base_n;
     int missao;
 };
 
 struct heroi{
     int ID_hero;
-    struct cjto_t *power;  
+    struct cjto_t *habilidades;  
     int paciencia;
     int velocidade;
     int EXP;
@@ -51,9 +51,9 @@ struct base{
     int ID_base;
     int lotacao;
     struct cjto_t *present;
+    int fila_max;
     struct fila_t *espera;
     struct local_cart local;
-    int fila_max;
     int missoes;
 };
 
@@ -67,7 +67,7 @@ struct missao{
 
 struct mundo{
     int N_heroi;
-    struct heroi heroes[N_HEROIS];
+    struct heroi herois[N_HEROIS];
     int N_base;
     struct base bases[N_BASES];   
     int N_missao;

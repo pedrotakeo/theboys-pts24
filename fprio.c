@@ -12,7 +12,7 @@
 
 //verifica se itens sendo inseridos sao copias
 //retorna 0 se for uma copia e 1 se não. -1 em erro
-int verifica_copia(struct fprio_t *f, struct fpnodo_t *novo) {
+int verifica_copia(struct fprio_t *f, struct fpnodo_t *novo){
     struct fpnodo_t *atual = f->prim;
 
     while (atual){
@@ -30,7 +30,7 @@ int verifica_copia(struct fprio_t *f, struct fpnodo_t *novo) {
 //busca nodo anterior a posição onde novo deve ser inserido
 //usado para casos genericos (nao lida com casos especiais de fprio_insere)
 //retorna o nodo "atual"(nodo anterior a posição onde novo deve ser inserido), ou NULL(falha)
-struct fpnodo_t *busca_pos(struct fprio_t *f, struct fpnodo_t *novo) {
+struct fpnodo_t *busca_pos(struct fprio_t *f, struct fpnodo_t *novo){
     struct fpnodo_t *atual = f->prim;
 
     while (atual){

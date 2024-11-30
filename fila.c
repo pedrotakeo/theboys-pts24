@@ -43,7 +43,6 @@ struct fila_t *fila_destroi (struct fila_t *lst){
 
 int fila_insere (struct fila_t *lst, int item){
     struct item_t* novo;
-    int pos = -1;
 
     if (!lst || !(novo = malloc(sizeof(struct item_t)))){ //fila nula ou malloc deu errado
 
@@ -61,16 +60,14 @@ int fila_insere (struct fila_t *lst, int item){
         return lst->tamanho;
     }
     
-    if (pos >= lst->tamanho || pos == -1){
-        novo->prox = NULL;
-        novo->ant = lst->ult;
-        lst->ult->prox = novo;
-        lst->ult = novo;
-        lst->tamanho++;
-
-        return lst->tamanho;
-    }
+    
+    novo->prox = NULL;
+    novo->ant = lst->ult;
+    lst->ult->prox = novo;
+    lst->ult = novo;
+    lst->tamanho++;
     return lst->tamanho;
+    
 }
 
 int fila_retira (struct fila_t *lst, int *item){
@@ -82,26 +79,24 @@ int fila_retira (struct fila_t *lst, int *item){
         return -1;
     }
 
-    if (pos == 0){
-        aux = lst->prim;
-        if (lst->tamanho == 1){
-            lst->prim = NULL;
-            lst->ult = NULL;
-        }
-        if (lst->tamanho > 1){
-            aux->prox->ant = NULL;
-            lst->prim = aux->prox;
-        }
-        *item = aux->valor;
-        free(aux);
-        aux = NULL;
-        lst->tamanho--;
-
-        return lst->tamanho;
+    aux = lst->prim;
+    if (lst->tamanho == 1){
+        lst->prim = NULL;
+        lst->ult = NULL;
     }
-    
+    if (lst->tamanho > 1){
+        aux->prox->ant = NULL;
+        lst->prim = aux->prox;
+    }
+    *item = aux->valor;
+    free(aux);
+    aux = NULL;
+    lst->tamanho--;
     return lst->tamanho;
+
 }
+    
+    
 
 int fila_consulta (struct fila_t *lst, int *item, int pos){
     struct item_t* aux;
@@ -165,7 +160,7 @@ void fila_imprime (struct fila_t *lst){
 
     aux = lst->prim;
     for (int i = 0; i < lst->tamanho; i++){
-        if(aux == lst->ult){
+        if (aux == lst->ult){
             printf("%d", lst->ult->valor); // se for o ultimo item, nao imprime espaço depois do número
             return;
         }
