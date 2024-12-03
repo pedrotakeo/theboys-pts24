@@ -1,5 +1,0 @@
--testar bem .h
--alterar fila p virar uma fila
--FIX NUMBER SHIT IN MUNDO.C
-
-randseed 50 - unfisnished missions

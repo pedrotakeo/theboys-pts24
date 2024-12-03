@@ -74,24 +74,21 @@ struct mundo{
     struct missao missoes[N_MISSOES];
     int N_habilidades;
     struct fprio_t *lef;
+    int eventos_tratados;
     int missoes_cumpridas;
+    int herois_mortos;
 };
 
-
-//heroi and base are indexes for mundo->heroi/base arrays
+// cria um mundo e inicializa todos seus componentes
+// RETORNO: ponteiro para struct mundo inicializado ou NULL em erro
 struct mundo *ini_mundo();
 
+// destroi mundo e todos seus componentes
+// RETORNO: NULL
 struct mundo *destroi_mundo(struct mundo *mundo);
 
-void ini_heroi(struct mundo *mundo);
-
-void ini_base(struct mundo *mundo);
-
-void ini_lef (struct mundo *mundo);
-
+// executa eventos da lef
 void ex_ev(struct mundo *mundo);
-
-void ini_missoes(struct mundo *mundo);
 
 
 #endif

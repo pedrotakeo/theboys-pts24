@@ -30,6 +30,6 @@ void morre_ev(struct mundo *mundo, int tempo, struct dados *hb);
 
 void missao_ev(struct mundo *mundo, int tempo, struct dados *hb);
 
-void fim_ev (struct mundo *mundo, int tempo, int eventos, struct dados *hb);
+void fim_ev (struct mundo *mundo, int tempo, struct dados *hb);
 
 #endif
